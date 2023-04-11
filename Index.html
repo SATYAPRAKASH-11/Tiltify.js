@@ -399,7 +399,7 @@ footer #copyText, footer #icons {
                     <i class="bx bx-home"></i>
                     <h1>Home</h1>
                 </div>
-                <div class="box">
+                <div class="box" onclick="Download()">
                     <i class="bx bx-download"></i>
                     <h1>Download</h1>
                 </div>
@@ -533,5 +533,15 @@ footer #copyText, footer #icons {
             }
             UsageBox.style.transform = "scale(1)"
         }
+        function Download(){
+            var fileUrl = "https://satyaprakash-11.github.io/Tiltify.js/Tiltify.js",
+            fileName = "Tiltify.js",
+            a = document.createElement("a")
+            a.href = fileUrl
+            a.download = fileName
+            document.body.appendChild(a)
+            a.click()
+            document.body.removeChild(a)
+}
     </script>
 </html>
