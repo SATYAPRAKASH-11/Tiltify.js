@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Tiltify.js</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <meta name="og:title" content="Tiltify">
+        <meta name="og:description" content="Tiltify is a lightweight JavaScript library that adds a 3D tilt effect to HTML elements based on mouse or touch input.It's easy to customize tilting with parallax effects as it uses modern JS events & CSS3 transforms.">
+        <meta name="keywords" content="Tiltify, Tilt effect, 3d tilf effect, css3 tilf effect, css 3d tilt effect, css3 3d tilt effect, mousehover effect, touch gesture, creative designs, tilting, 3d animation, visual effects, 3d parallax effects, tilt effect & parallax, parallax effects, parallax effects with tilting">
+        <meta name="theme-color" content="#141937">
+        <link rel="shortcut icon" href="Tiltify.JPG" type="image/x-icon">
+        <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+        <style>
+@import url("https://fonts.googleapis.com/css2?family=Comfortaa:wght@300;400;500;600;700&display=swap");
+*::after, *::before, * {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+* {
+    transition:.25s;
+    font-family:Comfortaa;
+    text-decoration:none;
+    -webkit-tap-highlight-color:transparent;
+}
+body::before {
+    content:"";
+    position:absolute;
+    right:0;
+    bottom:0;
+    height:275px;
+    width:275px;
+    background:linear-gradient(-120deg, #ff2a5a, blueviolet);
+    clip-path:circle(55% at right 80%);
+    z-index:-2;
+}
+body::after {
+    content:"";
+    position:absolute;
+    left:0;
+    top:0;
+    height:275px;
+    width:275px;
+    background:linear-gradient(120deg, red, orangered);
+    clip-path:circle(50% at left 25%);
+    z-index:-2;
+}
+*::-webkit-scrollbar, ::-webkit-scrollbar {
+    display:none;
+}
+body {
+    height:100dvh;
+    width:100dvw;
+    background:#141937;
+    scale:.25;
+    transition-delay:.25s;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:fixed;
+    overflow:hidden;
+}
+footer {
+    bottom:0;
+}
+#nav {
+    top:0;
+}
+#nav, footer {
+    height:55.75px;
+    width:100dvw;
+    background:rgba(0,0,0,.25);
+    box-shadow:10px 0 10px rgba(0,0,0,.75);
+    backdrop-filter:blur(1rem);
+    left:0;
+    position:fixed;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    user-select:none;
+}
+#nav h2 {
+    height:55px;
+    padding:5.25px 0 0 10px;
+    font-size:24px;
+    font-weight:700;
+    posotion:fixed;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#bars {
+    height:55.75px;
+    width:55.75px;
+    gap:9.25px;
+    right:0;
+    position:fixed;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+#b1, #b2, #b3 {
+    height:4px;
+    border-radius:5px;
+    background:#f4f4f4;
+    overflow:hidden;
+}
+#b1, #b3 {
+    width:45.75px;
+    transition:.25s ease-out;
+}
+#b2 {
+    width:30px;
+    right:-5.5px;
+    position:relative;
+}
+#bars.active #b1 {
+    transform:rotate(45deg);
+    position:absolute;
+}
+#bars.active #b3 {
+    transform:rotate(-45deg);
+    position:absolute;
+}
+#bars.active #b2 {
+    transform:translate(-100vw);
+}
+#side {
+    user-select:none;
+    transform:scale(0);
+}
+#side #Box {
+    height:85%;
+    width:100%;
+    gap:5dvh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+}
+#side #Box .box {
+    height:52.75px;
+    width:300px;
+    border-radius:10px;
+    color:#f4f4f4;
+    box-shadow:0 0 10px rgba(0,0,0,.75);
+    background:rgba(0,0,0,.25);
+    backdrop-filter:blur(1rem);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#side #Box .box i {
+    height:50px;
+    width:50px;
+    border-radius:5px 0 0 5px;
+    font-size:24px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#side #Box .box h1 {
+    height:50px;
+    width:calc(100% - 50px);
+    border-radius:0 5px 5px 0;
+    padding:5px 0 0 8px;
+    font-weight:400;
+    font-size:20px;
+    display:flex;
+    justify-content:left;
+    align-items:center;
+}
+#side #Box .rounded {
+    padding:.75rem 1rem;
+    border-radius:25px;
+    background:rgba(255,255,255,.25);
+    font-size:17.75px;
+    color:#141937;
+    gap:.75rem;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#side #Box .rounded a {
+    color:#141937;
+}
+#main, #side, #UsageBox {
+    height:calc(100dvh - 55.75px * 2);
+    width:100dvw;
+    top:55.75px;
+    left:0;
+    position:fixed;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#main #text::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    z-index: -1;
+    border-radius:15px;
+    backdrop-filter: blur(1rem);
+}
+#main #text {
+    height:65dvh;
+    width:82.5dvw;
+    border-radius:15px;
+    padding:25px 0;
+    gap:1.25rem;
+    color:#f4f4f4;
+    background:rgba(0,0,0,.25);
+    box-shadow:0 0 10px rgba(0,0,0,.5);
+    transform:scale(1);
+    transform-style:preserve-3d;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    user-select:none;
+}
+#main #text #start {
+    height:45px;
+    width:200px;
+    background:#141937;
+    color:#f4f4f4;
+    letter-spacing:1px;
+    border-radius:25px;
+    padding-top:3.65px;
+    transform:translateZ(25px);
+    text-transform:uppercase;
+    border:none;
+    outline:none;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+#UsageBox {
+    transform:scale(0);
+}
+#UsageBox #content {
+    height:100%;
+    width:320px;
+    padding:1rem;
+    color:#f4f4f4;
+    overflow:scroll;
+}
+#UsageBox #content h4 {
+    line-height:1.255rem;
+    letter-spacing:.25px;
+    color:#f4f4f4;
+    user-select:none;
+}
+#UsageBox #content .code {
+    padding:1rem .75rem;
+    border-radius:15px;
+    overflow:scroll;
+    width:100%;
+    height:auto;
+    white-space:nowrap;
+    background:rgba(0,0,0,.5);
+    backdrop-filter:blur(1rem);
+}
+#UsageBox #content .code .spaces {
+    margin-left:2.05rem;
+}
+footer {
+    color:#f4f4f4;
+}
+footer #copyText {
+    height:40px;
+    border-inline-end:1.5px solid rgba(255,255,255,.3);
+    font-weight:700;
+}
+footer #icons {
+    font-size:24px;
+}
+footer #icons a {
+    color:#f4f4f4;
+}
+footer #icons a:active {
+    transform:scale(.5);
+}
+footer #copyText, footer #icons {
+    width:50%;
+    gap:10%;
+    color:#f4f4f4;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+@media only screen and (max-width: 767px){
+    #nav h2 {
+        font-size: 20px;
+    }
+    #bars {
+        height: 45.75px;
+        width: 45.75px;
+    }
+    #b1, #b2, #b3 {
+        height: 3px;
+    }
+    #side #Box .box {
+        font-size: 16px;
+    }
+    #side #Box .box i {
+        height: 40px;
+        width: 40px;
+        font-size: 20px;
+    }
+    #side #Box .box h1 {
+        height: 40px;
+        font-size: 18px;
+    }
+    #side #Box .rounded {
+        padding: 0.5rem 0.75rem;
+        font-size: 14px;
+        gap: 0.5rem;
+    }
+}
+@media only screen and (min-width: 768px) and (max-width: 1023px){
+    #nav h2 {
+        font-size: 20px;
+    }
+    #bars {
+        height: 45.75px;
+        width: 45.75px;
+    }
+    #b1, #b2, #b3 {
+        height: 3px;
+    }
+    #side #Box .box {
+        font-size: 16px;
+    }
+    #side #Box .box i {
+        height: 40px;
+        width: 40px;
+        font-size: 20px;
+    }
+    #side #Box .box h1 {
+        height: 40px;
+        font-size: 18px;
+    }
+    #side #Box .rounded {
+        padding: 0.5rem 0.75rem;
+        font-size: 14px;
+        gap: 0.5rem;
+    }
+}
+@media only screen and (min-width: 1024px) and (max-width: 1279px){
+    #nav h2 {
+        font-size: 24px;
+    }
+    #bars {
+        height: 55.75px;
+        width: 55.75px;
+    }
+    #b1, #b2, #b3 {
+        height: 4px;
+    }
+    #side #Box .box {
+        height: 50.75px;
+        width: 85vw;
+        font-size: 20px;
+    }
+    #side #Box .box i {
+        height: 50px;
+        width: 50px;
+        font-size: 24px;
+    }
+    #side #Box .box h1 {
+        height: 50px;
+        font-size: 20px;
+    }
+    #side #Box .rounded {
+        padding: 0.75rem 1rem;
+        font-size: 18px;
+        gap: 0.75rem;
+    }
+}
+        </style>
+    </head>
+    <body>
+        <nav id="nav">
+            <h2 style="color:transparent;-webkit-background-clip:text;background-image:linear-gradient(120deg, orangered, blueviolet);font-family:cursive;">Tiltify.js</h2>
+            <div id="bars">
+                <div id="b1"></div>
+                <div id="b2"></div>
+                <div id="b3"></div>
+            </div>
+        </nav>
+        <aside id="side">
+            <div id="Box" class="tilt">
+                <div id="Text" class="box">
+                    <i class="bx bx-home"></i>
+                    <h1>Home</h1>
+                </div>
+                <div class="box">
+                    <i class="bx bx-download"></i>
+                    <h1>Download</h1>
+                </div>
+                <div class="box" id="Usage">
+                    <i class="bx bx-book"></i>
+                    <h1>Usage</h1>
+                </div>
+                <div class="box" >
+                    <i class="bx bx-user"></i>
+                    <h1>Dev</h1>
+                </div>
+                <div class="rounded">
+                    <small>Follow me on</small>
+                    <a href="#" class="bx bxl-github"></a>
+                    <a href="#" class="bx bxl-codepen"></a>
+                    <a href="#" class="bx bxl-instagram"></a>
+                </div>
+            </div>
+        </aside>
+        <div id="main">
+            <div id="text" class="tilt">
+                <h3 style="transform:translateZ(25px);font-weight:300;">Hello I'm</h3>
+                <h1 style="width:20px;transition:5s;overflow:hidden;display:flex;justify-content:left;align-items:center;color:transparent;-webkit-background-clip:text;background-image:linear-gradient(120deg, orangered, blueviolet);font-family:cursive;" id="Name">Tiltify</h1>
+                <h4 style="transform:translateZ(25px);font-weight:300;">Hover me to Tilt.</h4>
+                <div id="start">Get started</div>
+            </div>
+        </div>
+        <div id="UsageBox">
+            <div id="content">
+                <h1 style="font-size:2.25rem;text-align:center;color:transparent;-webkit-background-clip:text;background-image:linear-gradient(120deg, orangered, blueviolet);font-family:cursive;user-select:none;">Tiltify.js</h1><br>
+                <div class="code">
+                    <font color="#f4f4f4"><</font></font><font color="orangered">script</font>
+                    <font color="#f4f4f4">src=</font>
+                    <font color="green">"Tiltify.js"</font><font color="#f4f4f4">></font></font><font color="#f4f4f4">&lt;/</font><font color="orangered">script</font><font color="#f4f4f4">></font></font>
+                </div><br>
+                <h4>
+                    Tiltify is a lightweight JavaScript library that adds a 3D tilt effect to <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">HTML</mark> elements based on mouse or touch input.It's easy to customize tilting with parallax effects as it uses modern <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">JS</mark> events & <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">CSS3</mark> transforms.
+                </h4><br>
+                <div class="code">
+                    <font color="orangered">let</font>
+                    <font color="#f4f4f4">tiltify</font>
+                    <font color="#f4f4f4">=</font>
+                    <font color="#8ba3cb">new</font>
+                    <font color="red">Tiltify</font><font color="#f4f4f4">(</font><br>
+                    <font color="#f4f4f4">$$(</font>
+                    <font color="green">".myElements"</font>
+                    <font color="#f4f4f4">),</font><br>
+                    <font color="#8ba3cb" class="spaces">max: </font>
+                    <font color="#f4f4f4">75</font><font color="#f4f4f4">,</font><br>
+                    <font color="#8ba3cb" class="spaces">perspective: </font>
+                    <font color="#f4f4f4">1000</font><font color="#f4f4f4">,</font><br>
+                    <font color="#8ba3cb" class="spaces">speed: </font>
+                    <font color="#f4f4f4">300<br>
+                    <font color="#f4f4f4">)}</font>
+                </div><br>
+                <h4>
+                    To use Tiltify, simply include the Tiltify script in your <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">HTML</mark> file and create a new instance with the selector for the elements you want to tilt and any custom options. You can also destroy the Tiltify instance when it's no longer needed with the <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">destroy()</mark> method.
+                </h4><br>
+                <div class="code">
+                    <font color="orange">tiltify.</font>
+                    <font color="red">destroy()</font>
+                </div><br>
+                <h4>
+                    For adding 3d parallax effect in an element add <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">transform-style:preserve-3d;</mark> to the tilting element & add <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">translateZ(25px)</mark> to the childrens of the tilting elememt.
+                </h4><br>
+                <div class="code">
+                    <font color="#f4f4f4">.</font><font color="#1cc3e8">tiltingParent</font>
+                    <font color="#f4f4f4">{</font><br>
+                    <font class="spaces" color="#8ba3cb">transform-style</font><font color="#f4f4f4">:</font>
+                    <font>preserve-3d</font><font color="#f4f4f4">;</font><br>
+                    <font class="spaces" color="#8ba3cb">transform</font><font color="#f4f4f4">:</font>
+                    <font>perspective</font><font color="#f4f4f4">(</font><font>1000</font><font color="#f4f4f4">px</font><font color="#f4f4f4">);</font><br>
+                    <font color="#f4f4f4">}</font><br>
+                    <font color="#f4f4f4">.</font><font color="#1cc3e8">tiltingChildrens</font>
+                    <font color="#f4f4f4">{</font><br>
+                    <font class="spaces" color="#8ba3cb">transform</font><font color="#f4f4f4">:</font>
+                    <font>translateZ</font><font color="#f4f4f4">(</font><font>25</font><font color="#f4f4f4">px</font><font color="#f4f4f4">);</font><br>
+                    <font color="#f4f4f4">}</font>
+                </div><br>
+                <h4>
+                    The main purpose of creating <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">Tiltify</mark> was to make tilt effect mobile friendly by adding Tilt effects on touchmove events for toucheable devices like <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">Mobile</mark> & <mark style="background:#f4f4f4;border-radius:5px;padding:.45rem .25rem .25rem .25rem;color:#141937;">Tablets</mark>.
+                </h4><br>
+            </div>
+        </div>
+        <footer>
+            <div id="copyText">
+                <small style="color:transparent;-webkit-background-clip:text;background-image:linear-gradient(120deg, orangered, blueviolet);font-family:cursive;">©Tiltify</small>
+            </div>
+            <div id="icons">
+                <a href="#" class="bx bxl-github"></a>
+                <a href="#" class="bx bxl-codepen"></a>
+                <a href="#" class="bx bxl-instagram"></a>
+            </div>
+        </footer>
+    </body>
+    <script src="Tiltify.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.style.scale = 1
+            document.body.style.opacity = 1
+            const tiltify = new Tiltify($$(".tilt"), {
+                max: 55,
+                perspective: 1000,
+                speed: 300
+            })
+        })
+        onload = () => {
+            setTimeout(() => {
+                Name.style.width = "50%"
+                Name.style.borderRadius = "100px"
+                Name.style.justifyContent = "center"
+            }, 750)
+        }
+        bars.onclick = () => {
+            bars.classList.toggle("active")
+            if(bars.classList.contains("active")){
+                main.style.transform = "scale(0)"
+                UsageBox.style.transform = "scale(0)"
+                side.style.transform = "scale(1)"
+            } else {
+                main.style.transform = "scale(1)"
+                UsageBox.style.transform = "scale(0)"
+                side.style.transform = "scale(0)"
+            }
+        }
+        start.onclick = Usage.onclick = () => {
+            main.style.transform = "scale(0)"
+            if(side.style.transform == "scale(1)"){
+                side.style.transform = "scale(0)"
+                bars.classList.toggle("active")
+            }
+            UsageBox.style.transform = "scale(1)"
+        }
+    </script>
+</html>
